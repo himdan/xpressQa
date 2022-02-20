@@ -8,3 +8,4 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+/public/AdminLTE-3.2.0/

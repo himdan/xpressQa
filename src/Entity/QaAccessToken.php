@@ -20,12 +20,12 @@ class QaAccessToken
     use TenantTrait;
     /**
      * @var QaProvider|null
-     * @ORM\ManyToOne(targetEntity=QaProvider)
+     * @ORM\ManyToOne(targetEntity=QaProvider::class)
      */
     private $provider;
     /**
      * @var QaUser|null
-     * @ORM\ManyToOne(targetEntity="QaUser")
+     * @ORM\ManyToOne(targetEntity=QaUser::class)
      */
     private $user;
     /**

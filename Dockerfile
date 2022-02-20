@@ -18,6 +18,7 @@ RUN apk add --no-cache \
 		gettext \
 		git \
 		gnu-libiconv \
+		libpq-dev \
 	;
 
 # install gnu-libiconv and set LD_PRELOAD env to make iconv work fully on Alpine image.
@@ -37,6 +38,9 @@ RUN set -eux; \
 	docker-php-ext-install -j$(nproc) \
 		intl \
 		zip \
+		pdo \
+		pdo_pgsql\
+		pgsql \
 	; \
 	pecl install \
 		apcu-${APCU_VERSION} \
@@ -45,6 +49,7 @@ RUN set -eux; \
 	docker-php-ext-enable \
 		apcu \
 		opcache \
+		pgsql\
 	; \
 	\
 	runDeps="$( \

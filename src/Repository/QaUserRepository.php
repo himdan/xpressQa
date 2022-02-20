@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Component\Datatable\Manager\DtSource;
 use App\Entity\QaUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -15,7 +17,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  * @method QaUser[]    findAll()
  * @method QaUser[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class QaUserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class QaUserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, DtSource
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -36,32 +38,24 @@ class QaUserRepository extends ServiceEntityRepository implements PasswordUpgrad
         $this->_em->flush();
     }
 
-    // /**
-    //  * @return QaUser[] Returns an array of QaUser objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function search(array $context): Paginator
     {
-        return $this->createQueryBuilder('q')
-            ->andWhere('q.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('q.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->_em->createQueryBuilder();
+        $qb
+            ->select("qa_user")
+            ->from(QaUser::class, 'qa_user');
 
-    /*
-    public function findOneBySomeField($value): ?QaUser
-    {
-        return $this->createQueryBuilder('q')
-            ->andWhere('q.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $itemPerPage = (int)($context['itemPerPage'] ?? 10);
+        $page = (int)($context['page'] ?? 0);
+
+        $qb
+            ->setFirstResult($page * $itemPerPage)
+            ->setMaxResults($itemPerPage);
+        $q = $qb->getQuery();
+        $paginator = new Paginator($q);
+
+        return $paginator;
     }
-    */
+
+
 }
