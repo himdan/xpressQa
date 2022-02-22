@@ -13,7 +13,7 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
-    <body class="hold-transition sidebar-mini layout-fixed">
+    <body class="hold-transition {% block body_class %}sidebar-mini layout-fixed{% endblock %}">
         {% block body %}{% endblock %}
         {% block page_js %} {% endblock %}
     </body>

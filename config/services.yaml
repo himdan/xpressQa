@@ -4,7 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    OAUTH_GITHUB_CLIENT_ID: '%env(OAUTH_GITHUB_CLIENT_ID)%'
+    OAUTH_GITHUB_CLIENT_SECRET: '%env(OAUTH_GITHUB_CLIENT_SECRET)%'
+    OAUTH_GITHUB_CLIENT_REDIRECT_ROUTE: '%env(OAUTH_GITHUB_CLIENT_REDIRECT_ROUTE)%'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -22,3 +24,6 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Component\Provider\Github\OAuth2GithubClientProviderFactory: ~
+    League\OAuth2\Client\Provider\Github:
+        factory: ['@App\Component\Provider\Github\OAuth2GithubClientProviderFactory', 'getProvider']

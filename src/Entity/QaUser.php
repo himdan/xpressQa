@@ -34,6 +34,10 @@ class QaUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+    /**
+     * @var string|null $plainPassword
+     */
+    private $plainPassword;
 
     public function getId(): ?int
     {
@@ -82,6 +86,12 @@ class QaUser implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    public function addRole(string $role){
+        $this->roles[] = $role;
+        $this->roles = array_unique($this->roles);
+        return $this;
+    }
+
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -120,7 +130,25 @@ class QaUser implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials()
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+
+         $this->plainPassword = null;
     }
+
+    /**
+     * @return string
+     */
+    public function getPlainPassword(): string
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param string $plainPassword
+     */
+    public function setPlainPassword(string $plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+
 }

@@ -20,10 +20,19 @@ class DashboardController extends QaController
 {
     /**
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/")
+     * @Route("/", name="app_dash")
      */
     public function index()
     {
         return $this->render('backend/pages/dash.html.twig', []);
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/welcome", name="app_on_boarding")
+     */
+    public function onBoarding()
+    {
+        return $this->render('backend/pages/onboard.html.twig', ['on_bord'=>true]);
     }
 }
