@@ -76,10 +76,13 @@ class DatatableManager
      * @param array $normalizationContext
      * @return string
      */
-    public function JsonSerialize(array $context, array $normalizationContext=[])
+    public function JsonSerialize(array $context, array $normalizationContext = [])
     {
         $dtResponse = $this->wrap($context);
-        return $this->serializer->serialize($dtResponse, 'json', $normalizationContext);
+        $normalization = [];
+        $normalization['groups'] =  isset($normalizationContext['groups'])? array_merge(['dt'], $normalizationContext['groups']):['dt'];
+        $dtResponse->setSerializationContext($normalization);
+        return $this->serializer->serialize($dtResponse, 'json', $normalization);
 
     }
 

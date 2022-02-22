@@ -86,13 +86,17 @@ class QaSecurityController extends QaController
         if (!$request->attributes->has('code')) {
             $authUrl = $provider->getAuthorizationUrl();
             $request->getSession()->set('oauth2state', $provider->getState());
+            sleep(5);
             return $this->redirect($authUrl);
 
         } elseif (empty($request->get('state')) || ($request->get('state') !== $request->getSession()->get('oauth2state'))) {
             $request->getSession()->remove('oauth2state');
+            sleep(5);
             $this->redirect($this->getLoginUrl($request));
 
         } else {
+            sleep(5);
+            dump($request->attributes->all());
 
             $token = $provider->getAccessToken('authorization_code', [
                 'code' => $request->get('code')

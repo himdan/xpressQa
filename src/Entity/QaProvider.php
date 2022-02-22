@@ -9,11 +9,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\QaProviderRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Class QaProvider
  * @package App\Entity
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass=QaProviderRepository::class)
  */
 class QaProvider
 {
@@ -22,6 +24,7 @@ class QaProvider
     /**
      * @ORM\Column(type="string")
      * @var string|null
+     * @Groups({"all"})
      */
     private $name;
 

@@ -10,11 +10,12 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Repository\QaAccessTokenRepository;
 
 /**
  * Class QaAccessToken
  * @package App\Entity
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass=QaAccessTokenRepository::class)
  */
 class QaAccessToken implements UserInterface
 {

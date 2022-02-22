@@ -19,13 +19,17 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class QaUserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, DtSource
 {
+
+    use PaginatorTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, QaUser::class);
     }
 
     /**
-     * Used to upgrade (rehash) the user's password automatically over time.
+     * @param PasswordAuthenticatedUserInterface $user
+     * @param string $newHashedPassword
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
@@ -45,16 +49,7 @@ class QaUserRepository extends ServiceEntityRepository implements PasswordUpgrad
             ->select("qa_user")
             ->from(QaUser::class, 'qa_user');
 
-        $itemPerPage = (int)($context['itemPerPage'] ?? 10);
-        $page = (int)($context['page'] ?? 0);
-
-        $qb
-            ->setFirstResult($page * $itemPerPage)
-            ->setMaxResults($itemPerPage);
-        $q = $qb->getQuery();
-        $paginator = new Paginator($q);
-
-        return $paginator;
+        return $this->getPaginator($qb, $context);
     }
 
 

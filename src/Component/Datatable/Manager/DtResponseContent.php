@@ -9,24 +9,34 @@
 namespace App\Component\Datatable\Manager;
 
 
+use Symfony\Component\Serializer\Annotation\Groups;
+
 class DtResponseContent
 {
     /**
      * @var int|null
+     * @Groups({"dt"})
      */
     private $draw;
     /**
      * @var int|null
      */
-    private $recordsTotal;
+    private $recordsTotal = 0;
     /**
      * @var int|null
+     * @Groups({"dt"})
      */
-    private $recordsFiltered;
+    private $recordsFiltered = 0;
     /**
      * @var array
+     * @Groups({"dt"})
      */
     private $data = [];
+    /**
+     * @var array
+     * @Groups({"dt"})
+     */
+    private $serializationContext = [];
 
     /**
      * @return int|null
@@ -97,11 +107,21 @@ class DtResponseContent
         return $this->data;
     }
 
+    /**
+     * @return array
+     */
+    public function getSerializationContext(): array
+    {
+        return $this->serializationContext;
+    }
 
-
-
-
-
+    /**
+     * @param array $serializationContext
+     */
+    public function setSerializationContext(array $serializationContext): void
+    {
+        $this->serializationContext = $serializationContext;
+    }
 
 
 

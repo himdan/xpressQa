@@ -34,16 +34,16 @@ class UserManagementController extends QaController
      * @param Request $request
      * @param UserDatatable $userDatatable
      * @return Response
-     * @Route("/list")
+     * @Route("/list", name="list_users")
      */
     public function search(Request $request, UserDatatable $userDatatable)
     {
         $context = $this->getContext($request);
 
         $datatable = $userDatatable->createDatatableManager();
-        $content = $datatable->JsonSerialize($context, ['admin_user']);
+        $content = $datatable->JsonSerialize($context, ['groups' => ['admin_user']]);
         $response = new Response($content,
-            200,
+            Response::HTTP_OK,
             [
                 'content-type' => 'application/json'
             ]
