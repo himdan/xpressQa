@@ -35,4 +35,13 @@ class DashboardController extends QaController
     {
         return $this->render('backend/pages/onboard.html.twig', ['on_bord'=>true]);
     }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/load/contact", name="app_load_contact", options={"expose":"true"})
+     */
+    public function loadContact()
+    {
+        return $this->render('common/iframe.html.twig',[]);
+    }
 }

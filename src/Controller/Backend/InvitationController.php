@@ -46,7 +46,7 @@ class InvitationController extends QaController
         }
         return $this->render('common/modal.html.twig', [
             'form' => $form->createView(),
-            'action' => $this->generateUrl('invitation_create')
+            'action' => 'invitation_create'
         ]);
     }
 }

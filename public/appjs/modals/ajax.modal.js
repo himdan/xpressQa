@@ -1,5 +1,8 @@
 (function ($) {
   $.fn.ajaxAction = function (_config) {
+    const config = $.extend({
+      'submit':true
+    }, _config)
     return this.each(function () {
       const modalAnchor = $(this).data('xtarget')
       const modalBodyHref = $(this).data('body')
@@ -8,9 +11,11 @@
       const _self = this;
       $(this).on('click', function () {
         $(selector).load(modalBodyHref, function (data) {
-          const formSelector = `${modalAnchor} .modal-content form`;
-          $(formSelector).ajaxFormModal({
-          })
+          if(config['submit'] === true){
+            const formSelector = `${modalAnchor} .modal-content form`;
+            $(formSelector).ajaxFormModal({
+            })
+          }
           $(modalAnchor).modal('show');
         })
       })

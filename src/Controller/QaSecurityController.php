@@ -159,7 +159,7 @@ class QaSecurityController extends QaController
      * @Route("/google_check", name="app_check_google")
      * @param Request $request
      * @param GoogleContactRunner $contactRunner
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function checkGoogle(Request $request, GoogleContactRunner $contactRunner)
     {
@@ -167,7 +167,11 @@ class QaSecurityController extends QaController
         $googleClient = $contactRunner->getGoogleClient();
         $redirectUrl = $this->generateUrl('app_check_google', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $googleClient->setRedirectUri($redirectUrl);
-        $googleClient->setScopes([\Google_Service_PeopleService::CONTACTS_OTHER_READONLY,\Google_Service_PeopleService::USER_EMAILS_READ]);
+        $googleClient->setScopes([
+            \Google_Service_PeopleService::CONTACTS_READONLY,
+            \Google_Service_PeopleService::CONTACTS_OTHER_READONLY,
+            \Google_Service_PeopleService::USER_EMAILS_READ
+        ]);
         if (!$request->get('code')) {
             $state = sha1(sprintf('sf_%s_me', time()));
             $authUrl = $googleClient->createAuthUrl();
@@ -178,12 +182,9 @@ class QaSecurityController extends QaController
             $code = $request->get('code');
             $persons = [];
             $contactRunner->iterateOverOtherContact($state, $code, function(PeopleService\Person $person)use(&$persons){
-                array_push($persons, [
-                    'name' => $person->getNames()[0],
-                    'email'=> $person->getEmailAddresses()[0]
-                ]);
+                array_push($persons, $person);
             });
-            return $this->json($persons);
+            return $this->render('common/contact-list-html.twig', ['persons' => $persons]);
 
         }
     }

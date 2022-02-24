@@ -25,7 +25,7 @@ class GoogleContactRunner
      * @var int
      */
     private $pageSize = 10;
-    private $readMask = 'metadata,names,emailAddresses';
+    private $readMask = 'metadata,names,emailAddresses,photos';
 
     /**
      * GoogleContactRunner constructor.
