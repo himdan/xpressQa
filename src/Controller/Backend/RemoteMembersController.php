@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class RemoteMembersController
  * @package App\Controller\Backend
- * @Route("/admin/remote_members")
+ * @Route("/admin/github")
  */
 class RemoteMembersController extends QaController
 {
@@ -33,7 +33,12 @@ class RemoteMembersController extends QaController
      */
     public function listOrganization(Request $request, GithubApiClientFactory $apiClientFactory)
     {
-        return $this->json($apiClientFactory->configure()->currentUser()->organizations());
+        return $this->json(
+            $apiClientFactory
+                ->configure()
+                ->currentUser()
+                ->organizations()
+        );
     }
 
 
@@ -48,6 +53,29 @@ class RemoteMembersController extends QaController
     public function listOrganizationMembers(Request $request, GithubApiClientFactory $apiClientFactory)
     {
 
-        return $this->json($apiClientFactory->configure()->organization()->members());
+        $org = $request->get('org', 'MehdiDemo-Organization');
+        return $this->json($apiClientFactory
+            ->configure()
+            ->organization()
+            ->members()
+            ->all($org)
+        );
+    }
+    /**
+     * @Route("/orgs/projects", name="org_project", options={"expose":"true"})
+     * @param Request $request
+     * @param GithubApiClientFactory $apiClientFactory
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function listOrganizationProject(Request $request, GithubApiClientFactory $apiClientFactory)
+    {
+        $org = $request->get('org', 'MehdiDemo-Organization');
+        return $this->json($apiClientFactory
+            ->configure()
+            ->orgProjects()
+            ->all($org)
+        );
     }
 }

@@ -30,3 +30,8 @@ services:
         factory: ['@App\Component\Provider\Github\OAuth2GithubClientProviderFactory', 'getProvider']
     Symfony\Component\Serializer\Serializer:
         factory: ['@App\Serializer\SerializerFactory', 'createSerializer']
+    
+    App\Component\Provider\Google\GoogleApiClientFactory: ~
+    
+    Google\Service\PeopleService:
+        factory: ['@App\Component\Provider\Google\GoogleApiClientFactory', 'createPeopleService']

@@ -18,4 +18,24 @@ use Doctrine\ORM\Mapping as ORM;
 class QaInvitation
 {
     use TenantTrait;
+    /**
+     * @var QaProvider
+     */
+    private $provider;
+    /**
+     * @var string
+     */
+    private $uuid;
+    /**
+     * @var string
+     */
+    private $login;
+    /**
+     * @var string
+     */
+    private $organizationUuid;
+    /**
+     * @var string $email
+     */
+    private $email;
 }
