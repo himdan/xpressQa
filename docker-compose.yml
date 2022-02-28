@@ -1,19 +1,47 @@
 version: "3.4"
-
+x-php-common:
+  &php-common
+  image: php-fpm-common:latest
+  build:
+    context: .
+    target: symfony_php
+    args:
+      SYMFONY_VERSION: ${SYMFONY_VERSION:-}
+      SKELETON: ${SKELETON:-symfony/skeleton}
+      STABILITY: ${STABILITY:-stable}
+      PHP_VERSION: ${PHP_VERSION:-7.4}
+  environment:
+    # Run "composer require symfony/orm-pack" to install and configure Doctrine ORM
+    DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?serverVersion=${POSTGRES_VERSION}
+    # Run "composer require symfony/mercure-bundle" to install and configure the Mercure integration
+    MERCURE_URL: ${CADDY_MERCURE_URL:-http://caddy/.well-known/mercure}
+    MERCURE_PUBLIC_URL: https://${SERVER_NAME:-localhost}/.well-known/mercure
+    MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeMe!}
 services:
-    
+  redis:
+    image: "redis:alpine"
+    hostname: redis
+    ports:
+      - "6379:6379"
+  mail:
+    container_name: sys_mail
+    restart: unless-stopped
+    image: eaudeweb/mailtrap
+    ports:
+      - "8125:80"
+      - "2525:25"
+    environment:
+      - MT_USER=${MT_USER:-mailtrap}
+      - MT_PASSWD=${MT_PASSWD:-mailtrap}
+      - MT_MAILBOX_LIMIT=512000001
+      - MT_MESSAGE_LIMIT=102400001  
   php:
-    build:
-      context: .
-      target: symfony_php
-      args:
-        SYMFONY_VERSION: ${SYMFONY_VERSION:-}
-        SKELETON: ${SKELETON:-symfony/skeleton}
-        STABILITY: ${STABILITY:-stable}
-        PHP_VERSION: ${PHP_VERSION:-7.4}
+    <<: *php-common
     restart: unless-stopped
     links:
       - database
+      - mail
+      - redis
     volumes:
       - php_socket:/var/run/php
     healthcheck:
@@ -21,13 +49,21 @@ services:
       timeout: 3s
       retries: 3
       start_period: 30s
-    environment:
-      # Run "composer require symfony/orm-pack" to install and configure Doctrine ORM
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?serverVersion=${POSTGRES_VERSION}
-      # Run "composer require symfony/mercure-bundle" to install and configure the Mercure integration
-      MERCURE_URL: ${CADDY_MERCURE_URL:-http://caddy/.well-known/mercure}
-      MERCURE_PUBLIC_URL: https://${SERVER_NAME:-localhost}/.well-known/mercure
-      MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeMe!}
+      
+  invitation-consumer:
+    <<: *php-common
+    restart: on-failure
+    volumes:
+      # The "cached" option has no effect on Linux but improves performance on Mac
+      - ./:/srv/app:rw,cached
+      - ./docker/php/conf.d/symfony.dev.ini:/usr/local/etc/php/conf.d/symfony.ini
+    depends_on:
+      - php
+    links:
+      - database
+      - mail
+      - redis
+    command: "php bin/console messenger:consume invitation_transport -vv"  
 
   caddy:
     build:

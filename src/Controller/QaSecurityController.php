@@ -15,7 +15,6 @@ use App\Entity\QaProvider;
 use App\Entity\QaUser;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Google\Service\PeopleService;
 use League\OAuth2\Client\Provider\Github;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -144,13 +143,13 @@ class QaSecurityController extends QaController
         return $this->urlGenerator->generate(self::LOGIN_ROUTE, [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
-    private function findOrCreateProvider(EntityManager $em)
+    private function findOrCreateProvider(EntityManager $em, $name='GITHUB')
     {
-        $provider = $em->getRepository(QaProvider::class)->findOneBy(['name' => 'GITHUB']);
+        $provider = $em->getRepository(QaProvider::class)->findOneBy(['name' => $name]);
 
         if ($provider) return $provider;
         $provider = new QaProvider();
-        $provider->setName('GITHUB');
+        $provider->setName($name);
 
         return $provider;
     }
@@ -158,15 +157,18 @@ class QaSecurityController extends QaController
     /**
      * @Route("/google_check", name="app_check_google")
      * @param Request $request
-     * @param GoogleContactRunner $contactRunner
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @param \Google_Client $googleClient
+     * @param EntityManagerInterface $em
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function checkGoogle(Request $request, GoogleContactRunner $contactRunner)
+    public function checkGoogleContact(Request $request, \Google_Client $googleClient, EntityManagerInterface $em)
     {
 
-        $googleClient = $contactRunner->getGoogleClient();
+
         $redirectUrl = $this->generateUrl('app_check_google', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $googleClient->setRedirectUri($redirectUrl);
+        $googleClient->setAccessType('offline');
+        $googleClient->setApprovalPrompt('force');
         $googleClient->setScopes([
             \Google_Service_PeopleService::CONTACTS_READONLY,
             \Google_Service_PeopleService::CONTACTS_OTHER_READONLY,
@@ -180,11 +182,22 @@ class QaSecurityController extends QaController
         }else {
             $state = $request->getSession()->get('Google_OAuth2_state');
             $code = $request->get('code');
-            $persons = [];
-            $contactRunner->iterateOverOtherContact($state, $code, function(PeopleService\Person $person)use(&$persons){
-                array_push($persons, $person);
-            });
-            return $this->render('common/contact-list-html.twig', ['persons' => $persons]);
+            $googleClient->setState($state);
+            $token = $googleClient->fetchAccessTokenWithAuthCode($code);
+            $qaUser = $em->getRepository(QaUser::class)->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
+            $accessToken = QaAccessToken::initToken();
+            $accessToken->setUuid($token['refresh_token']);
+            $accessToken->setUser($qaUser);
+            $provider = $this->findOrCreateProvider($em, 'GOOGLE');
+            $accessToken->setProvider($provider);
+            $accessToken->setToken($token['refresh_token']);
+            $em->persist($provider);
+            $em->persist($accessToken);
+            $em->flush();
+            return $this->json([
+                'refresh_token'=>$token['refresh_token'],
+                'user' => $this->getUser()
+            ]);
 
         }
     }

@@ -43,10 +43,12 @@ RUN set -eux; \
 		pgsql \
 	; \
 	pecl install \
+		redis \
 		apcu-${APCU_VERSION} \
 	; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
+		redis \
 		apcu \
 		opcache \
 		pgsql\

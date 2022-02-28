@@ -19,6 +19,7 @@ class DtResponseContent
      */
     private $draw;
     /**
+     * @Groups({"dt"})
      * @var int|null
      */
     private $recordsTotal = 0;

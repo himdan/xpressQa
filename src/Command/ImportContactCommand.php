@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use App\Component\Provider\Google\Runner\GoogleContactRunner;
+use App\Repository\QaAccessTokenRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,39 +19,57 @@ class ImportContactCommand extends Command
      * @var \Google_Client
      */
     private $googleClient;
-
     /**
-     * ImportContactCommand constructor.
-     * @param \Google_Client $googleClient
-     * @param null $name
+     * @var GoogleContactRunner $googleContactRunner
      */
-    public function __construct(\Google_Client $googleClient, $name = null)
+    private $googleContactRunner;
+    /**
+     * @var QaAccessTokenRepository
+     */
+    private $accessTokenRepository;
+
+    public function __construct(
+        \Google_Client $googleClient,
+        GoogleContactRunner $contactRunner,
+        QaAccessTokenRepository $accessTokenRepository,
+        $name = null)
     {
         parent::__construct($name);
         $this->googleClient = $googleClient;
+        $this->googleContactRunner = $contactRunner;
+        $this->accessTokenRepository = $accessTokenRepository;
+
     }
 
 
     protected function configure(): void
     {
         $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+            ->addArgument('uuid', InputArgument::REQUIRED, 'user identifier')
+            ->addArgument('provider', InputArgument::REQUIRED, 'provider')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
+        $uuid = $input->getArgument('uuid');
+        $provider = $input->getArgument('provider');
+        $refreshToken = $this->accessTokenRepository->getTokenByProviderAndUserIdentifier($uuid, $provider);
+        $this->googleContactRunner->setPageSize(10);
+        $this->googleContactRunner->iterateOverOtherContact($refreshToken, function($person)use($io){
+            if(count($person['names'])){
+                $io->writeln('--------------');
+                $io->writeln(sprintf(
+                    'importing %s %s %s',
+                    $person['names'][0]['displayName'],
+                    $person['emailAddresses'][0]['value'],
+                    $person['photos'][0]['url']
+                ));
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
-        }
+            }
+        });
 
-        if ($input->getOption('option1')) {
-            // ...
-        }
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 

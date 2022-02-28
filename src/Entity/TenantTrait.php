@@ -18,7 +18,7 @@ trait TenantTrait
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"all"})
+     * @Groups({"dt"})
      */
     private $id;
 

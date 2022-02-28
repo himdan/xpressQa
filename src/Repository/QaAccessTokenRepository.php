@@ -47,19 +47,54 @@ class QaAccessTokenRepository extends ServiceEntityRepository implements DtSourc
     public function getTokenByProviderAndUser(QaUser $user, string $providerName)
     {
         $qb = $this->createQueryBuilder('qa_access_token');
-//        $qb
-//            ->innerJoin('qa_access_token.user', 'qa_user')
-//            ->innerJoin('qa_access_token.provider', 'qa_provider');
-//        $qb
-//            ->where('qa_user.id=:user_id')
-//            ->andWhere('qa_provider.name=:provider_name');
-//
-//        $qb
-//            ->setParameter('user_id', $user->getId())
-//            ->setParameter('provider_name', $providerName);
+        $qb
+            ->innerJoin('qa_access_token.user', 'qa_user')
+            ->innerJoin('qa_access_token.provider', 'qa_provider');
+        $qb
+            ->where('qa_user.id=:user_id')
+            ->andWhere('qa_provider.name=:provider_name');
+
+        $qb
+            ->setParameter('user_id', $user->getId())
+            ->setParameter('provider_name', $providerName);
+
+        $qb->setFirstResult(0);
         $qb->setMaxResults(1);
 
         return $qb->getQuery()->getSingleResult();
+
+    }
+
+    /**
+     * @param string $uuid
+     * @param string $providerName
+     * @return mixed
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+
+    public function getTokenByProviderAndUserIdentifier(string $uuid, string $providerName)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb
+            ->select('qa_access_token.token')
+            ->from(QaAccessToken::class, 'qa_access_token')
+        ;
+        $qb
+            ->innerJoin('qa_access_token.user', 'qa_user')
+            ->innerJoin('qa_access_token.provider', 'qa_provider');
+        $qb
+            ->where('qa_user.email=:email')
+            ->andWhere('qa_provider.name=:provider_name');
+
+        $qb
+            ->setParameter('email', $uuid)
+            ->setParameter('provider_name', $providerName);
+
+        $qb->setFirstResult(0);
+        $qb->setMaxResults(1);
+
+        return $qb->getQuery()->getSingleScalarResult();
 
     }
 

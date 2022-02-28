@@ -1,0 +1,12 @@
+framework:
+    messenger:
+        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+        # failure_transport: failed
+
+        transports:
+            invitation_transport:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%/invitations?auto_setup=true&serializer=1&stream_max_entries=0&dbindex=0&delete_after_ack=1'
+
+        routing:
+            # Route your messages to the transports
+             'App\Message\SendInvitationEmailMessage': invitation_transport

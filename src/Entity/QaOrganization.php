@@ -26,7 +26,7 @@ class QaOrganization
     /**
      * @var string|null
      */
-    private $name;
+    private $name='';
 
     /**
      * @return string|null
@@ -58,6 +58,11 @@ class QaOrganization
     public function setName(?string $name): void
     {
         $this->name = $name;
+    }
+
+    public function __toString()
+    {
+        return $this->getDomain();
     }
 
 }

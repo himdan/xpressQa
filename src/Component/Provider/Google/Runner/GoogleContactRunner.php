@@ -38,9 +38,8 @@ class GoogleContactRunner
         $this->googleClient = $googleClient;
     }
 
-    private function configureClient(string $state, string  $code){
-        $this->googleClient->setState($state);
-        $token = $this->googleClient->fetchAccessTokenWithAuthCode($code);
+    private function configureClient(string $refreshToken){
+        $token = $this->googleClient->fetchAccessTokenWithRefreshToken($refreshToken);
         $this->googleClient->setAccessToken($token);
     }
 
@@ -73,30 +72,45 @@ class GoogleContactRunner
     }
 
 
-
-
     /**
-     * @param $state
-     * @param $code
+     * @param string $refreshToken
      * @param callable $worker
      */
-    public function iterateOverOtherContact($state, $code, callable $worker)
+    public function iterateOverOtherContact(string $refreshToken, callable $worker)
     {
-        $this->configureClient($state, $code);
+        $this->configureClient($refreshToken);
         $optParams = array(
             'pageSize' => $this->pageSize,
-            'readMask' => $this->readMask
+            'readMask' => $this->readMask,
         );
-        $results = $this->peopleService->otherContacts->listOtherContacts($optParams);
-        $pages = ceil($results->getTotalSize() / $optParams['pageSize']);
-        for ($iteration = 0; $iteration < $pages; $iteration++) {
+        do{
+            $results = $this->peopleService->otherContacts->listOtherContacts($optParams);
             foreach ($results->getOtherContacts() as $person) {
                 call_user_func($worker, $person);
             }
-            $results->next();
+            $nextPageToken = $results->getNextPageToken();
+            if($nextPageToken){
+                $optParams['pageToken'] = $nextPageToken;
+            } else {
+                break;
+            }
+        }while(true);
+
+    }
+
+    public function searchOverOtherContact(string $query, string $refreshToken, callable $worker)
+    {
+        $this->configureClient($refreshToken);
+        $optParams = array(
+            'pageSize' => $this->pageSize,
+            'readMask' => $this->readMask,
+            'query'=> $query
+        );
+
+        $search = $this->peopleService->otherContacts->search($optParams);
+        foreach ($search->getResults() as $result){
+            call_user_func($worker, $result->getPerson());
         }
-
-
     }
 
 

@@ -14,7 +14,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class OrganizationType extends AbstractType
+class OrganizationType extends QaType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

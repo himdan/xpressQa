@@ -21,11 +21,11 @@ trait PaginatorTrait
      * @return Paginator
      */
     protected function getPaginator(QueryBuilder $qb, $context){
-        $itemPerPage = (int)($context['itemPerPage'] ?? 10);
-        $page = (int)($context['page'] ?? 0);
+        $itemPerPage = (int)($context['length'] ?? 10);
+        $start = (int)($context['start'] ?? 10);
 
         $qb
-            ->setFirstResult($page * $itemPerPage)
+            ->setFirstResult($start)
             ->setMaxResults($itemPerPage);
         $q = $qb->getQuery();
         $paginator = new Paginator($q);

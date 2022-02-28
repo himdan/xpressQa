@@ -10,6 +10,7 @@ namespace App\Controller\Backend;
 
 
 use App\Controller\QaController;
+use App\Entity\QaMembership;
 use App\Entity\QaOrganization;
 use App\Form\OrganizationType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,12 +35,14 @@ class OrganizationController extends QaController
         $organization = new QaOrganization();
         $form = $this->createForm(OrganizationType::class, $organization);
         $form->handleRequest($request);
-        if($form->isSubmitted()&& $form->isValid()){
+        if ($request->isMethod('POST') && $form->isSubmitted() && $form->isValid()) {
             $em->persist($organization);
+            $qaMemberShip = new QaMembership($this->getUser(), $organization);
+            $em->persist($qaMemberShip);
             $em->flush();
         }
-        return $this->render('backend/pages/organization/create.org.html.twig',[
-            'form'=> $form->createView(),
+        return $this->render('backend/pages/organization/create.org.html.twig', [
+            'form' => $form->createView(),
             'action' => 'create_org'
         ]);
 

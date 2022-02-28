@@ -16,6 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class QaController extends AbstractController
 {
     protected function getContext(Request $request){
-        return $request->attributes->all();
+        return $request->query->all();
     }
 }

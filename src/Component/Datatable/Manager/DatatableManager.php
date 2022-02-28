@@ -62,7 +62,7 @@ class DatatableManager
         $paginator = $this->dataSource->search($context);
         $count = count($paginator);
         $dtResponseContent
-            ->setDraw(1)
+            ->setDraw($context['draw']??1)
             ->setRecordsTotal($count)
             ->setRecordsFiltered($count);
         foreach ($paginator as $item) {

@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: chehimi
- * Date: 24/02/22
- * Time: 04:45 م
+ * Date: 27/02/22
+ * Time: 10:50 ص
  */
 
 namespace App\Manager;
@@ -11,10 +11,14 @@ namespace App\Manager;
 
 use App\Entity\QaInvitation;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class InvitationManager
 {
-
+    /**
+     * @var ParameterBagInterface $parameterBag
+     */
+    private $parameterBag;
     /**
      * @var EntityManagerInterface $em
      */
@@ -22,34 +26,48 @@ class InvitationManager
 
     /**
      * InvitationManager constructor.
+     * @param ParameterBagInterface $parameterBag
      * @param EntityManagerInterface $em
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(ParameterBagInterface $parameterBag, EntityManagerInterface $em)
     {
+        $this->parameterBag = $parameterBag;
         $this->em = $em;
     }
 
 
-    public function createInvitation(array $emails)
+    /**
+     * @param QaInvitation $invitation
+     * @return string
+     */
+    public function generateIdentifier(QaInvitation $invitation)
     {
-        foreach ($emails as $email){
-            $invitation = new QaInvitation();
-            $invitation->setEmail($email);
-            $this->em->persist($email);
-
-        }
-        try{
-            $this->em->flush();
-        }catch (\Exception $exception){
-
-        }
+        $meta = [
+            'email' => $invitation->getEmail(),
+            'time' => microtime(),
+            'secret' =>'XpressQa-dev'
+        ];
+        $claim = json_encode($meta);
+        return sha1($claim);
 
     }
 
+    public function findInvitation($identifier)
+    {
+        return $this
+            ->em
+            ->getRepository(QaInvitation::class)
+            ->findOneBy(['identifier' => $identifier]);
+    }
 
+    public function changeStatus(QaInvitation $invitation, int $status)
+    {
+        $invitation->setStatus($status);
+        return $this;
+    }
 
-
-
-
-
+    public function flush()
+    {
+        $this->em->flush();
+    }
 }

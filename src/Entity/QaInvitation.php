@@ -8,7 +8,9 @@
 
 namespace App\Entity;
 
+
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Class QaInvitation
@@ -19,9 +21,11 @@ class QaInvitation
 {
     use TenantTrait;
     const Pending = 1;
+    const SENT = 2;
     /**
      * @var string|null
      * @ORM\Column(type="string", nullable=true)
+     * @Groups({"admin_user"})
      */
     private $email;
     /**
@@ -30,6 +34,7 @@ class QaInvitation
      */
     private $createdAt;
     /**
+     * @Groups({"admin_user"})
      * @var int|null
      * @ORM\Column(type="smallint", nullable=true)
      */
@@ -39,6 +44,11 @@ class QaInvitation
      * @ORM\ManyToOne(targetEntity=QaOrganization::class)
      */
     private $qaOrganization;
+    /**
+     * @var string|null $identifier
+     * @ORM\Column(type="string")
+     */
+    private $identifier;
 
     /**
      * QaInvitation constructor.
@@ -113,6 +123,24 @@ class QaInvitation
     {
         $this->qaOrganization = $qaOrganization;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getIdentifier(): ?string
+    {
+        return $this->identifier;
+    }
+
+    /**
+     * @param string|null $identifier
+     */
+    public function setIdentifier(?string $identifier): void
+    {
+        $this->identifier = $identifier;
+    }
+
+
 
 
 
