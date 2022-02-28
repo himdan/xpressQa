@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="card direct-chat direct-chat-primary">
+                    <div class="card">
                         <div class="card-header ui-sortable-handle" style="cursor: move;">
                             <h3 class="card-title">current invitation</h3>
 
@@ -24,7 +24,7 @@
                         <!-- /.card-header -->
                         <div class="card-body">
 
-                            <table id="example1" class="table table-bordered table-striped">
+                            <table id="example1" class="table table-bordered table-striped w-100">
                                 <thead>
                                 <tr>
                                     <th>&nbsp;</th>
@@ -91,10 +91,17 @@
                 processing: true,
                 serverSide: true,
                 ajax: Routing.generate('list_invitation', {}),
+                "columnDefs": [ {
+                    "targets": 3,
+                    "render": function ( data, type, row, meta ) {
+                        return '<button class="btn btn-primary">+</button> '
+                    }
+                } ],
                 columns: [
                     { data: 'id' },
                     { data: 'email' },
                     { data: 'status' },
+                    {}
                 ]
             })
         });

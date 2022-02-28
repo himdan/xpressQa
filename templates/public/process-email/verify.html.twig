@@ -9,6 +9,106 @@
     <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('app/integration.css') }}">
 {% endblock %}
-{% block body_class %} {% endblock %}
+{% block page_js %}
+    <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    {% block js_before %}{% endblock %}
+
+    <script src="{{ asset('dist/js/adminlte.js') }}"></script>
+    {% block js_after %}{% endblock %}
+{% endblock %}
+{% block body_class %}
+
+{% endblock %}
 {% block body %}
+
+    <div class="row">
+        <div class="col-5 col-sm-2" style="padding-top: 12vh">
+            <div class="nav flex-column nav-tabs h-100" id="vert-tabs-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="vert-tabs-welcome-tab" data-toggle="pill" href="#vert-tabs-welcome" role="tab" aria-controls="vert-tabs-welcome" aria-selected="false">
+                    <span class="badge badge-success">1</span> Welcome
+                </a>
+                <a class="nav-link" id="vert-tabs-home-tab" data-toggle="pill" href="#vert-tabs-home" role="tab" aria-controls="vert-tabs-home" aria-selected="false">
+                    <span class="badge badge-primary">2</span> Credential
+                </a>
+                <a class="nav-link" id="vert-tabs-profile-tab" data-toggle="pill" href="#vert-tabs-profile" role="tab" aria-controls="vert-tabs-profile" aria-selected="false">
+                    <span class="badge badge-primary">3</span> GHS
+                </a>
+                <a class="nav-link" id="vert-tabs-summary-tab" data-toggle="pill" href="#vert-tabs-summary" role="tab" aria-controls="vert-tabs-profile" aria-selected="false">
+                    <span class="badge badge-primary">4</span> Account Settings
+                </a>
+            </div>
+        </div>
+        <div class="col-7 col-sm-9 pt-5">
+            <div class="tab-content" id="vert-tabs-tabContent">
+                <div class="tab-pane text-left fade active show" id="vert-tabs-welcome" role="tabpanel" aria-labelledby="vert-tabs-welcome-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="login-box-msg">Welcome</p>
+                            <div class="d-flex flex-column text-center">
+                                <p class="text-bold">You have been invited to join  the {{ invitation.qaOrganization.domain }} workspace</p>
+                                <p class="text-black-50">Please proceed the registration process</p>
+                                <a href="" class="btn btn-block btn-primary col-4 offset-4">Next</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane text-left fade " id="vert-tabs-home" role="tabpanel" aria-labelledby="vert-tabs-home-tab">
+                    <div class="card">
+                        <div class="card-body register-card-body">
+                            <p class="login-box-msg">Register a new membership</p>
+                            {{ form_start(form) }}
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="username">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    {{ form_widget(form.password) }}
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-error">
+                                        {{ form_errors(form.password) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="icheck-primary">
+                                            <input type="checkbox" id="agreeTerms" name="terms" value="agree">
+                                            <label for="agreeTerms">
+                                                I agree to the <a href="#">terms</a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-4">
+                                        <button type="submit" class="btn btn-primary btn-block">Next</button>
+                                    </div>
+                                    <!-- /.col -->
+                                </div>
+                            {{ form_rest(form) }}
+                            {{ form_end(form) }}
+
+                            <div class="social-auth-links text-center">
+                                <p>- OR -</p>
+                                <a href="{{ path('app_login') }}" class="text-center">I already have a membership</a>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="vert-tabs-profile" role="tabpanel" aria-labelledby="vert-tabs-profile-tab">
+                    {{ include('common/integration.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

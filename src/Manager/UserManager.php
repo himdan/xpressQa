@@ -7,6 +7,9 @@
  */
 namespace App\Manager;
 
+use App\Entity\QaInvitation;
+use App\Entity\QaMembership;
+use App\Entity\QaOrganization;
 use App\Entity\QaUser;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -68,5 +71,25 @@ class UserManager
     {
         $this->em->persist($qaUser);
         $this->em->flush();
+    }
+
+    public function createFromInvitation(
+        QaUser $currentUser,
+        QaInvitation $invitation,
+        $password,
+        $roles = ['ROLE_ORG_GUEST']
+    ){
+        $currentUser->setEmail($invitation->getEmail());
+        $currentUser->setPassword($this->passwordHash->hashPassword($currentUser, $password));
+        $currentUser->setRoles($roles);
+        $this->em->persist($currentUser);
+        $membership = $this->createMemberShip($currentUser, $invitation->getQaOrganization());
+        $this->em->persist($membership);
+        return $currentUser;
+    }
+    private function createMemberShip(QaUser $qaUser, QaOrganization $organization)
+    {
+        $memberShip = new QaMembership($qaUser, $organization);
+        return $memberShip;
     }
 }

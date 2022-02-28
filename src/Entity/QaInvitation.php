@@ -22,6 +22,7 @@ class QaInvitation
     use TenantTrait;
     const Pending = 1;
     const SENT = 2;
+    const ACCEPTED = 3;
     /**
      * @var string|null
      * @ORM\Column(type="string", nullable=true)
