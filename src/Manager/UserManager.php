@@ -87,6 +87,8 @@ class UserManager
         $this->em->persist($membership);
         return $currentUser;
     }
+
+
     private function createMemberShip(QaUser $qaUser, QaOrganization $organization)
     {
         $memberShip = new QaMembership($qaUser, $organization);

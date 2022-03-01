@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\QaUserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -42,6 +44,21 @@ class QaUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string|null $plainPassword
      */
     private $plainPassword;
+    /**
+     * @var ArrayCollection|QaMembership[]|Collection
+     * @ORM\OneToMany(targetEntity="App\Entity\QaMembership", mappedBy="qaUser")
+     * @Groups({"admin_user"})
+     */
+    private $membership;
+
+    /**
+     * QaUser constructor.
+     */
+    public function __construct()
+    {
+        $this->membership = new ArrayCollection([]);
+    }
+
 
     public function getId(): ?int
     {
@@ -153,6 +170,16 @@ class QaUser implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->plainPassword = $plainPassword;
     }
+
+    /**
+     * @return QaMembership[]|ArrayCollection|Collection
+     */
+    public function getMembership()
+    {
+        return $this->membership;
+    }
+
+
 
 
 }

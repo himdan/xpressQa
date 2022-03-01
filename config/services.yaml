@@ -35,3 +35,8 @@ services:
     
     Google\Service\PeopleService:
         factory: ['@App\Component\Provider\Google\GoogleApiClientFactory', 'createPeopleService']
+
+    App\Component\Security\AclDiscoveryRegistry:
+        lazy: true
+        calls: 
+            - ['setNamespace', ['App\Controller']]

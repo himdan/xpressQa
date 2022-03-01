@@ -4,3 +4,6 @@
 fos_js_routing:
     prefix: /js
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing-sf4.xml"
+acl_list:
+    path: /
+    controller: App\Component\Security\Controller\DiscoveryController::listAcl

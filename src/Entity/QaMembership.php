@@ -20,7 +20,7 @@ class QaMembership
     use  TenantTrait;
     /**
      * @var QaUser|null
-     * @ORM\ManyToOne(targetEntity=QaUser::class)
+     * @ORM\ManyToOne(targetEntity=QaUser::class, inversedBy="memberShip")
      */
     private $qaUser;
     /**
@@ -28,6 +28,11 @@ class QaMembership
      * @ORM\ManyToOne(targetEntity=QaOrganization::class)
      */
     private $qaOrg;
+    /**
+     * @var array $permissions
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $permissions;
 
     /**
      * QaMembership constructor.
@@ -38,6 +43,7 @@ class QaMembership
     {
         $this->qaUser = $qaUser;
         $this->qaOrg = $qaOrg;
+        $this->permissions = ['GUEST'=>[]];
     }
 
     /**
@@ -71,6 +77,24 @@ class QaMembership
     {
         $this->qaOrg = $qaOrg;
     }
+
+    /**
+     * @return array
+     */
+    public function getPermissions(): array
+    {
+        return $this->permissions;
+    }
+
+    /**
+     * @param array $permissions
+     */
+    public function setPermissions(array $permissions): void
+    {
+        $this->permissions = $permissions;
+    }
+
+
 
 
 }

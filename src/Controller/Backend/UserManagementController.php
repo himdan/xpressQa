@@ -8,6 +8,7 @@
 
 namespace App\Controller\Backend;
 
+use App\Component\Security\ACL;
 use App\Controller\QaController;
 use App\Datatable\UserDatatable;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,10 +32,11 @@ class UserManagementController extends QaController
     }
 
     /**
+     * @ACL()
      * @param Request $request
      * @param UserDatatable $userDatatable
      * @return Response
-     * @Route("/list", name="list_users")
+     * @Route("/list", name="list_users", options={"expose":true})
      */
     public function search(Request $request, UserDatatable $userDatatable)
     {

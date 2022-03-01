@@ -10,6 +10,7 @@ namespace App\Controller\Backend;
 
 
 use App\Component\Provider\Google\Runner\GoogleContactRunner;
+use App\Component\Security\ACL;
 use App\Controller\QaController;
 use App\Repository\QaAccessTokenRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ContactController extends QaController
 {
     /**
+     * @ACL()
      * @Route("/list", name="list_contact", options={"expose":"true"})
      * @param Request $request
      * @param GoogleContactRunner $contactRunner
