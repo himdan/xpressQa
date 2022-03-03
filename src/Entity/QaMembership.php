@@ -29,10 +29,10 @@ class QaMembership
      */
     private $qaOrg;
     /**
-     * @var array $permissions
+     * @var array $roles
      * @ORM\Column(type="json", nullable=true)
      */
-    private $permissions;
+    private $roles = [];
 
     /**
      * QaMembership constructor.
@@ -43,7 +43,7 @@ class QaMembership
     {
         $this->qaUser = $qaUser;
         $this->qaOrg = $qaOrg;
-        $this->permissions = ['GUEST'=>[]];
+        $this->roles = ['ROLE_ORG_GUEST'];
     }
 
     /**
@@ -81,17 +81,18 @@ class QaMembership
     /**
      * @return array
      */
-    public function getPermissions(): array
+    public function getRoles(): array
     {
-        return $this->permissions;
+
+        return array_unique($this->roles?? ['ROLE_ORG_GUEST']);
     }
 
     /**
-     * @param array $permissions
+     * @param array $roles
      */
-    public function setPermissions(array $permissions): void
+    public function setRoles(array $roles): void
     {
-        $this->permissions = $permissions;
+        $this->roles = $roles;
     }
 
 

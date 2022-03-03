@@ -1,0 +1,24 @@
+{% extends 'common/modal.html.twig' %}
+{% block formBody %}
+    <table class="table table-bordered w-100">
+        <thead>
+            <tr>
+                <th>ORG</th>
+                <th>ROLES</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for k, subscription in form.memberShip %}
+            <tr>
+                <td>{{ user.memberShip[k].qaOrg.domain }}</td>
+                <td>
+                    {{ form_widget(subscription.roles) }}
+                    {{ form_errors(subscription.roles) }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {{ parent() }}
+{% endblock formBody %}

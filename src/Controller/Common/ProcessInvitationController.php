@@ -9,6 +9,7 @@
 namespace App\Controller\Common;
 
 
+use App\Component\Security\ACL;
 use App\Controller\QaController;
 use App\Entity\QaInvitation;
 use App\Entity\QaUser;
@@ -28,6 +29,7 @@ class ProcessInvitationController extends QaController
 {
 
     /**
+     * @ACL(contextGroup={"Process INVITATION"})
      * @Route("/verify/{identifier}", name="check_invitation")
      * @param $identifier
      * @param InvitationManager $invitationManager

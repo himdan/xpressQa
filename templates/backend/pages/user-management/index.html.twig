@@ -51,14 +51,18 @@
     <script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+    <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
 {% endblock %}
 {% block js_after %}
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('dist/js/demo.js') }}"></script>
+    <script src="{{ asset('appjs/modals/ajax.modal.js') }}"></script>
     <!-- Page specific script -->
     <script>
-        class MemberShipView{
-            constructor(data, jquery){
+
+
+        class MemberShipView {
+            constructor(data, jquery) {
                 this._data = data;
                 this._jquery = jquery
             }
@@ -67,7 +71,7 @@
                 this._data = value;
             }
 
-            ui(){
+            ui() {
                 console.log(this._data)
                 const $container = this._jquery('<div></div>');
                 const $element = this._jquery('<span onclick="alert(\'\')" class="badge badge-success"></span>')
@@ -76,33 +80,61 @@
                 return $container
             }
         }
+
         $(function () {
             $("#example1").DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: Routing.generate('list_users', {}),
-                "columnDefs": [
-
-                    {
-                        "targets": 3,
-                        "render": function (data, type, row, meta) {
-                            return '<button class="btn btn-primary" title="update security profile"><i class="fa fa-user-lock"></i></button> '
-                        }
-                    }
-                ],
+                fnDrawCallback: function () {
+                    $('button.x-action').each(function (i) {
+                        let time = (new Date()).getTime();
+                        let id = `action_${i}_${time}`;
+                        $(this).prop('id', id);
+                       $(`#${id}`).ajaxAction({
+                           'eventListener': (modalSelector) => {
+                               const _defaultConfig = {
+                                   dropdownParent: $(modalSelector)
+                               };
+                               $('select.form-control').select2(_defaultConfig);
+                           }
+                       });
+                    })
+                },
                 columns: [
                     {data: 'id'},
                     {data: 'email'},
                     {
-                        "data":null,
+                        "data": null,
                         "render": function (data, type, row, meta) {
                             let memberShipView = new MemberShipView(data, $)
                             return memberShipView.ui().html()
                         }
                     },
-                    {}
+                    {
+                        data: null,
+                        "render": function (data, type, row, meta) {
+                            const targetUrl = Routing.generate('manage_memberships', {"user": data.id});
+                            let $btn = $('<button  class="btn btn-primary x-action" data-xtarget="#modal-default"  data-body="' + targetUrl + '" data-toggle="modal"  title="update security profile"><i class="fa fa-user-lock"></i></button>');
+                            const $container = $('<div></div>')
+                            $btn.appendTo($container)
+                            return $container.html()
+                        }
+
+                    }
                 ]
             })
         });
     </script>
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    <style>
+
+        ul.select2-selection__rendered > li.select2-selection__choice {
+            color: black !important;
+        }
+    </style>
 {% endblock %}

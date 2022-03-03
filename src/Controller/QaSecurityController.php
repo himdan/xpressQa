@@ -10,6 +10,7 @@ namespace App\Controller;
 
 
 use App\Component\Provider\Google\Runner\GoogleContactRunner;
+use App\Component\Security\ACL;
 use App\Entity\QaAccessToken;
 use App\Entity\QaProvider;
 use App\Entity\QaUser;
@@ -83,6 +84,7 @@ class QaSecurityController extends QaController
     }
 
     /**
+     * @ACL(contextGroup={"ADMIN ON BOARDING"})
      * @Route("/github_check", name="app_check_github")
      * @param Request $request
      * @param Github $provider
@@ -155,6 +157,7 @@ class QaSecurityController extends QaController
     }
 
     /**
+     * @ACL(contextGroup={"INVITATION MANAGEMENT","ADMIN ON BOARDING"})
      * @Route("/google_check", name="app_check_google")
      * @param Request $request
      * @param \Google_Client $googleClient

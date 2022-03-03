@@ -8,6 +8,7 @@
 
 namespace App\Controller\Backend;
 
+use App\Component\Security\ACL;
 use App\Controller\QaController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -19,8 +20,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends QaController
 {
     /**
+     * @ACL(contextGroup={"DASHBORD"})
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/", name="app_dash")
+     * @Route("/", name="view_dashbord")
      */
     public function index()
     {
@@ -28,8 +30,9 @@ class DashboardController extends QaController
     }
 
     /**
+     * @ACL(contextGroup={"ADMIN ON BOARDING"})
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/welcome", name="app_on_boarding")
+     * @Route("/welcome", name="view_on_bording")
      */
     public function onBoarding()
     {
@@ -37,6 +40,7 @@ class DashboardController extends QaController
     }
 
     /**
+     * @ACL(contextGroup={"ADMIN ON BOARDING"})
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/load/contact", name="app_load_contact", options={"expose":"true"})
      */

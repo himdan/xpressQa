@@ -9,13 +9,15 @@
 namespace App\Controller;
 
 
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
 abstract class QaController extends AbstractController
 {
-    protected function getContext(Request $request){
+
+
+    protected function getContext(Request $request)
+    {
         return $request->query->all();
     }
 }

@@ -9,6 +9,7 @@
 namespace App\Controller\Backend;
 
 
+use App\Component\Security\ACL;
 use App\Controller\QaController;
 use App\Datatable\InvitationDatatable;
 use App\Entity\QaInvitation;
@@ -31,6 +32,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class InvitationController extends QaController
 {
     /**
+     * @ACL(contextGroup={"INVITATION MANAGEMENT"})
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/", name="invitation_index")
      */
@@ -40,6 +42,7 @@ class InvitationController extends QaController
     }
 
     /**
+     * @ACL(contextGroup={"INVITATION MANAGEMENT"})
      * @Route("/new", name="invitation_create", methods={"POST", "GET"}, options={"expose":"true"})
      * @param Request $request
      * @param EntityManagerInterface $em
@@ -81,11 +84,12 @@ class InvitationController extends QaController
         }
         return $this->render('common/modal.html.twig', [
             'form' => $form->createView(),
-            'action' => 'invitation_create'
+            'action' => $this->generateUrl('invitation_create')
         ]);
     }
 
     /**
+     * @ACL(contextGroup={"INVITATION MANAGEMENT"})
      * @Route("/list", name="list_invitation", options={"expose":true})
      * @param Request $request
      * @param InvitationDatatable $qaInvitationDatatable

@@ -35,6 +35,10 @@ class AclDiscoveryRegistry
      * @var KernelInterface $kernel
      */
     private $kernel;
+    /**
+     * @var RoleProviderInterface $roleProvider
+     */
+    private $roleProvider;
 
     /**
      * The Kernel root directory
@@ -46,20 +50,42 @@ class AclDiscoveryRegistry
      * @var array
      */
     private $acl = [];
+    private $permissions = [];
+    private $roles = [];
+    /**
+     * @var PermissionMapManager
+     */
+    private $permissionMapManager;
 
 
     /**
      * AclDiscoveryRegistry constructor.
      * @param Reader $annotationReader
      * @param KernelInterface $kernel
+     * @param PermissionMapManager $permissionMapManager
      */
-    public function __construct(Reader $annotationReader, KernelInterface $kernel)
+    public function __construct(
+        Reader $annotationReader,
+        KernelInterface $kernel,
+        PermissionMapManager $permissionMapManager
+    )
     {
 
         $this->annotationReader = $annotationReader;
         $this->kernel = $kernel;
+        $this->permissionMapManager = $permissionMapManager;
 
     }
+
+    /**
+     * @param RoleProviderInterface $roleProvider
+     */
+    public function setRoleProvider(RoleProviderInterface $roleProvider): void
+    {
+        $this->roles = $roleProvider->getRoles();
+    }
+
+
 
     /**
      * @param string $namespace
@@ -85,7 +111,11 @@ class AclDiscoveryRegistry
             $this->discoverACL();
         }
 
-        return $this->acl;
+        return [
+            'matrix'=>$this->acl,
+            'applied'=>$this->permissionMapManager->getMapping($this->roles,$this->permissions),
+            'permissions'=>$this->permissions,
+            'roles'=> $this->roles];
     }
 
     /**
@@ -114,11 +144,23 @@ class AclDiscoveryRegistry
                 }
 
                 /** @var Acl $annotation */
-                $this->acl[] = [
-                    'method' => sprintf('%s::%s', self::uglify($class), $method->getName()),
-                    'route' => $annotationRoute->getName(),
-                    'path' => $annotationRoute->getPath()
-                ];
+                $groups = array_map(function(string $context){
+                    return trim(strtoupper($context));
+                },$annotation->getContextGroup());
+                foreach ($groups as $group){
+                    if(!isset($this->acl[$group])){
+                        $this->acl[$group] = [];
+                    }
+                    array_push($this->acl[$group],[
+                        'method' => sprintf('%s::%s', self::uglify($class), $method->getName()),
+                        'permission' => $annotationRoute->getName(),
+                        'path' => $annotationRoute->getPath(),
+                        'expression' => $annotation->getExpression()
+                    ]);
+                    array_push($this->permissions, $annotationRoute->getName());
+                    $this->permissions = array_unique($this->permissions);
+                }
+
             }
         }
     }

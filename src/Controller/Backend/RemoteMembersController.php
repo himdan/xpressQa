@@ -10,6 +10,7 @@ namespace App\Controller\Backend;
 
 
 use App\Component\Provider\Github\GithubApiClientFactory;
+use App\Component\Security\ACL;
 use App\Controller\QaController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +25,8 @@ class RemoteMembersController extends QaController
 
 
     /**
-     * @Route("/orgs", name="orgs", options={"expose":"true"}))
+     * @ACL(contextGroup={"INVITATION MANAGEMENT"})
+     * @Route("/orgs", name="list_remote_orgs", options={"expose":"true"}))
      * @param Request $request
      * @param GithubApiClientFactory $apiClientFactory
      * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -43,7 +45,8 @@ class RemoteMembersController extends QaController
 
 
     /**
-     * @Route("/orgs/members", name="org_members", options={"expose":"true"})
+     * @ACL(contextGroup={"INVITATION MANAGEMENT"})
+     * @Route("/orgs/members", name="list_org_members", options={"expose":"true"})
      * @param Request $request
      * @param GithubApiClientFactory $apiClientFactory
      * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -62,7 +65,7 @@ class RemoteMembersController extends QaController
         );
     }
     /**
-     * @Route("/orgs/projects", name="org_project", options={"expose":"true"})
+     * @Route("/orgs/projects", name="list_org_project", options={"expose":"true"})
      * @param Request $request
      * @param GithubApiClientFactory $apiClientFactory
      * @return \Symfony\Component\HttpFoundation\JsonResponse

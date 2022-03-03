@@ -24,7 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ContactController extends QaController
 {
     /**
-     * @ACL()
+     * @ACL(contextGroup={"INVITATION MANAGEMENT"})
      * @Route("/list", name="list_contact", options={"expose":"true"})
      * @param Request $request
      * @param GoogleContactRunner $contactRunner

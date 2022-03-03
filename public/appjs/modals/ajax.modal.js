@@ -10,11 +10,14 @@
       const selector = `${modalAnchor} .modal-content`;
 
       const _self = this;
-      $(this).on('click', function () {
+      function clickHandler () {
         $(selector).load(modalBodyHref, function (data) {
           if(config['submit'] === true){
             const $form = $($(modalAnchor).find('form').first());
-            $form.ajaxFormModal({
+            let time = (new Date()).getTime();
+            const id = `id_${time}`;
+            $form.prop('id', id)
+            $(`#${id}`).ajaxFormModal({
               'parent': modalAnchor,
               'eventListener': config['eventListener']
             })
@@ -22,7 +25,9 @@
           $(modalAnchor).modal('show');
           config['eventListener'](modalAnchor);
         })
-      })
+      }
+      $(this).off('click')
+      $(this).bind('click', clickHandler)
 
     })
   };
@@ -33,7 +38,8 @@
     }, _config)
     return this.each(function () {
       let action = $(this).prop('action')
-      $(this).on('submit', (e) => {
+      let id = $(this).prop('id')
+      const submitHandler = (e) => {
         let formData = new FormData($(this)[0]);
         e.preventDefault();
         $.ajax({
@@ -54,7 +60,9 @@
 
           }
         });
-      })
+      };
+      $(`#${id}`).off('submit', submitHandler);
+      $(`#${id}`).bind('submit', submitHandler )
     })
   };
 })($);

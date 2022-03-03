@@ -9,6 +9,7 @@
 namespace App\Controller\Backend;
 
 
+use App\Component\Security\ACL;
 use App\Controller\QaController;
 use App\Entity\QaMembership;
 use App\Entity\QaOrganization;
@@ -25,6 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class OrganizationController extends QaController
 {
     /**
+     * @ACL(contextGroup={"ORG MANAGEMENT"})
      * @Route("/create", name="create_org", options={"expose":"true"})
      * @param Request $request
      * @param EntityManagerInterface $em
@@ -43,7 +45,7 @@ class OrganizationController extends QaController
         }
         return $this->render('backend/pages/organization/create.org.html.twig', [
             'form' => $form->createView(),
-            'action' => 'create_org'
+            'action' => $this->generateUrl('create_org')
         ]);
 
     }

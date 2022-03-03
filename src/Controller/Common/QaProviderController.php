@@ -9,6 +9,7 @@
 namespace App\Controller\Common;
 
 
+use App\Component\Security\ACL;
 use App\Controller\QaController;
 use App\Datatable\ProviderDatatable;;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class QaProviderController extends QaController
 {
     /**
+     * @ACL(contextGroup={"INVITATION MANAGEMENT"})
      * @param Request $request
      * @param ProviderDatatable $dtFactory
      * @return Response
