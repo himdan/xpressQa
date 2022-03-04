@@ -5,10 +5,10 @@ fos_js_routing:
     prefix: /js
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing-sf4.xml"
 acl_list:
-    path: /acl-matrix
+    path: /admin/acl-matrix
     options:
         expose: true
     controller: App\Component\Security\Controller\DiscoveryController::listAcl
 acl_index:
-    path: /
+    path: /admin/acl
     controller: App\Component\Security\Controller\DiscoveryController::index

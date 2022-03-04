@@ -12,6 +12,9 @@ parameters:
         - name: 'invitations'
           route: 'invitation_index'
           decoration: 'fa-tachometer-alt'
+        - name: 'ACL'
+          route: 'manage_acl'
+          decoration: 'fa-tachometer-alt'
 #        - name: 'tree'
 #          children:
 #              - name: 'level1'

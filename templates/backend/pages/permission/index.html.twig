@@ -1,0 +1,25 @@
+{% extends 'backend/page.html.twig' %}
+{% block main_content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body pt-5" style="height:80vh">
+                        <iframe src="{{ path('acl_index') }}" class="w-100 h-100">
+
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    <!-- Main content -->
+
+    <!-- /.content -->
+{% endblock %}
+{% block js_after %}
+    <!-- AdminLTE for demo purposes -->
+    <script src="{{ asset('dist/js/demo.js') }}"></script>
+{% endblock %}
