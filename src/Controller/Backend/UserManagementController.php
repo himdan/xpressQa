@@ -32,8 +32,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserManagementController extends QaController
 {
     /**
+     * @ACL(contextGroup={"USER MANAGEMENT"})
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/")
+     * @Route("/", name="view_users")
      */
     public function index()
     {

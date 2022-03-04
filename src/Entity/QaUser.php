@@ -103,7 +103,11 @@ class QaUser implements UserInterface, PasswordAuthenticatedUserInterface
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
-
+        foreach ($this->membership as $membership){
+            foreach ($membership->getRoles() as $role){
+                array_push($roles, $role);
+            }
+        }
 
         return array_unique($roles);
     }

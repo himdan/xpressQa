@@ -155,7 +155,6 @@ class AclDiscoveryRegistry
                         'method' => sprintf('%s::%s', self::uglify($class), $method->getName()),
                         'permission' => $annotationRoute->getName(),
                         'path' => $annotationRoute->getPath(),
-                        'expression' => $annotation->getExpression()
                     ]);
                     array_push($this->permissions, $annotationRoute->getName());
                     $this->permissions = array_unique($this->permissions);

@@ -7,7 +7,7 @@ parameters:
           route: 'view_dashbord'
           decoration: 'fa-tachometer-alt'
         - name: 'user management'
-          route: 'app_backend_usermanagement_index'
+          route: 'view_users'
           decoration: 'fa-tachometer-alt'
         - name: 'invitations'
           route: 'invitation_index'

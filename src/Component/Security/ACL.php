@@ -42,7 +42,7 @@ class ACL extends Security
 
     public function getExpression()
     {
-        return parent::getExpression()??"is_granted('ROLE_USER')";
+        return parent::getExpression()??"is_granted('ACCESS_ROUTE')";
     }
 
 
