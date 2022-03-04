@@ -64,7 +64,7 @@ class QaSecurityController extends QaController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {
-            return $this->redirectToRoute('app_dash');
+            return $this->redirectToRoute('view_dashbord');
         }
 
         // get the login error if there is one

@@ -1,0 +1,19 @@
+parameters:
+    menu:
+        - name: 'welcome'
+          route: 'view_on_bording'
+          decoration: 'fa-tachometer-alt'
+        - name: 'dashboard'
+          route: 'view_dashbord'
+          decoration: 'fa-tachometer-alt'
+        - name: 'user management'
+          route: 'app_backend_usermanagement_index'
+          decoration: 'fa-tachometer-alt'
+        - name: 'invitations'
+          route: 'invitation_index'
+          decoration: 'fa-tachometer-alt'
+#        - name: 'tree'
+#          children:
+#              - name: 'level1'
+#                children:
+#                    - name: 'level2'
