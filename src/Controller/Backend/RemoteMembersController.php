@@ -81,4 +81,112 @@ class RemoteMembersController extends QaController
             ->all($org)
         );
     }
+    /**
+     * @Route("/orgs/repositories", name="list_org_repositories", options={"expose":"true"})
+     * @param Request $request
+     * @param GithubApiClientFactory $apiClientFactory
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function listOrganizationRepositories(Request $request, GithubApiClientFactory $apiClientFactory){
+        $org = $request->get('org', 'MehdiDemo-Organization');
+        return $this->json($apiClientFactory
+            ->configure()
+            ->organization()
+            ->repositories($org)
+        );
+    }
+
+    /**
+     * @Route("/me/repositories", name="list_my_repositories", options={"expose":"true"})
+     * @param GithubApiClientFactory $apiClientFactory
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function listMyRepositories(GithubApiClientFactory $apiClientFactory){
+        return $this->json($apiClientFactory
+            ->configure()
+            ->me()
+            ->repositories('all')
+        );
+    }
+
+    /**
+     * @Route("/me/tree", name="view_my_github_tree", options={"expose":"true"})
+     * @param GithubApiClientFactory $apiClientFactory
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function loadTree(GithubApiClientFactory $apiClientFactory){
+        $myRepositories = $apiClientFactory
+            ->configure()
+            ->me()
+            ->repositories('all');
+        $repositoryMapper = function ($repository){
+            $repository['type'] = 'repository';
+            return [
+                'name' => $repository['name'],
+                'data' => $repository,
+            ];
+        };
+        $organizations = $apiClientFactory
+            ->configure()
+            ->currentUser()
+            ->organizations();
+        $projectMapper = function ($project){
+            $project['type'] = 'project';
+            return [
+                'name' =>  $project['name'],
+                'data' => $project,
+            ];
+        };
+        $projectByOrgMapper = function ($org)use($apiClientFactory, $projectMapper){
+            $projects = $apiClientFactory
+                ->configure()
+                ->orgProjects()
+                ->all($org);
+            return array_map($projectMapper, $projects);
+        };
+        $orgMapper = function ($org)use($projectByOrgMapper){
+            $org['type'] = 'organization';
+            $org['name'] = $org['login'];
+            return [
+                'name' => $org['login'],
+                'data' => $org,
+                'children' => [
+                    [
+                        'name' => 'projects',
+                        'children' => $projectByOrgMapper($org['login'])
+                    ]
+                ]
+            ];
+        };
+        $tree = [
+            'providers' =>[
+                [
+                    'name' => 'Github',
+                    'children' =>  [
+                        [
+                            'name' => 'organizations',
+                            'children'=> array_map($orgMapper, $organizations)
+                        ],
+                        [
+                            'name' => 'Personal',
+                            'children' => [
+                                [
+                                    'name' => 'repositories',
+                                    'children' => array_map($repositoryMapper, $myRepositories)
+                                ]
+                            ]
+                        ],
+                    ]
+                ]
+            ]
+        ];
+
+        return $this->json($tree);
+    }
 }

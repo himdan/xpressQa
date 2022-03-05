@@ -7,24 +7,110 @@
 
             <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="custom-content-workspace-tab" data-toggle="pill" href="#custom-content-workspace" role="tab" aria-controls="custom-content-workspace" aria-selected="true">Workspace</a>
+                    <a class="nav-link active" id="custom-content-workspace-tab" data-toggle="pill"
+                       href="#custom-content-workspace" role="tab" aria-controls="custom-content-workspace"
+                       aria-selected="true">Workspace</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-content-below-home-tab" data-toggle="pill" href="#custom-content-below-home" role="tab" aria-controls="custom-content-below-home" aria-selected="true">Contact provider</a>
+                    <a class="nav-link" id="custom-content-below-home-tab" data-toggle="pill"
+                       href="#custom-content-below-home" role="tab" aria-controls="custom-content-below-home"
+                       aria-selected="true">Contact provider</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-content-below-profile-tab" data-toggle="pill" href="#custom-content-below-profile" role="tab" aria-controls="custom-content-below-profile" aria-selected="false">Git host System</a>
+                    <a class="nav-link" id="custom-content-below-profile-tab" data-toggle="pill"
+                       href="#custom-content-below-profile" role="tab" aria-controls="custom-content-below-profile"
+                       aria-selected="false">Git host System</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-below-org-tab" data-toggle="pill"
+                       href="#custom-content-below-org" role="tab" aria-controls="custom-content-below-org"
+                       aria-selected="false">Remote Organization</a>
                 </li>
             </ul>
             <div class="tab-content" id="custom-content-below-tabContent">
-                <div class="tab-pane fade show active" id="custom-content-workspace" role="tabpanel" aria-labelledby="custom-content-workspace-tab">
+                <div class="tab-pane fade show active" id="custom-content-workspace" role="tabpanel"
+                     aria-labelledby="custom-content-workspace-tab">
                     {{ include('backend/pages/organization/org.html.twig') }}
                 </div>
-                <div class="tab-pane fade" id="custom-content-below-home" role="tabpanel" aria-labelledby="custom-content-below-home-tab">
+                <div class="tab-pane fade" id="custom-content-below-home" role="tabpanel"
+                     aria-labelledby="custom-content-below-home-tab">
                     {{ include('common/contact-provider.html.twig') }}
                 </div>
-                <div class="tab-pane fade" id="custom-content-below-profile" role="tabpanel" aria-labelledby="custom-content-below-profile-tab">
+                <div class="tab-pane fade" id="custom-content-below-profile" role="tabpanel"
+                     aria-labelledby="custom-content-below-profile-tab">
                     {{ include('common/integration.html.twig') }}
+                </div>
+                <div class="tab-pane fade" id="custom-content-below-org" role="tabpanel"
+                     aria-labelledby="custom-content-below-org-tab">
+
+                    <div class="card">
+                        <div class="card-body login-card-body">
+                            {#<p class="login-box-msg">Loaded Providers</p>#}
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            <div class="card-header ui-sortable-handle">
+                                                <h5 class="card-title">Provider hierarchy</h5>
+                                                <div class="card-tools">
+                                                    <span title="3 New Messages" class="badge badge-primary">3</span>
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-body">
+                                                <div id="jstreeContainer">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card  justify-content-center">
+                                            <form>
+                                                <div class="card-header">
+                                                    <h5 class="card-title">Actions Report</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p>we are Going to integrate the subsequent entities</p>
+                                                    <ul class="text-left text-black-50  m-2" style="list-style: none">
+                                                        <li class="mb-2"> <span class="badge badge-success">2</span> organizations</li>
+                                                        <li class="mb-2"> <span class="badge badge-success">2</span> projects</li>
+                                                        <li> <span class="badge badge-success">23</span> Repositories</li>
+                                                    </ul>
+                                                    <div class="d-flex flex-column p-5">
+                                                        <div class="text-center">
+                                                            <p>Please click Next in order to proceed</p>
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <button class="btn btn-primary ml-1">Next</button>
+                                                        </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="card mt-1">
+                                            <div class="card-header ui-sortable-handle">
+                                                <h5 class="card-title">Batch Status</h5>
+                                                <div class="card-tools">
+                                                    <span title="3 project selected" class="badge badge-success">3</span>
+                                                    <span title="3 New repositories" class="badge badge-primary">3</span>
+                                                    <span title="3 organization" class="badge badge-warning">3</span>
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body" style="height: 100vh;overflow-y: scroll">
+                                                <div id="batchContainer">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!----------------------------------->
@@ -37,40 +123,57 @@
     </section>
 
 {% endblock %}
-{% block js_before %}
-    <!-- ChartJS -->
-    <script src="{{ asset('plugins/chart.js/Chart.min.js') }}"></script>
-    <!-- Sparkline -->
-    <script src="{{ asset('plugins/sparklines/sparkline.js') }}"></script>
-    <!-- JQVMap -->
-    <script src="{{ asset('plugins/jqvmap/jquery.vmap.min.js') }}"></script>
-    <script src="{{ asset('plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
-    <!-- jQuery Knob Chart -->
-    <script src="{{ asset('plugins/jquery-knob/jquery.knob.min.js') }}"></script>
-    <!-- daterangepicker -->
-    <script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
-    <script src="{{ asset('plugins/daterangepicker/daterangepicker.js') }}"></script>
-    <!-- Tempusdominus Bootstrap 4 -->
-    <script src="{{ asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-    <!-- Summernote -->
-    <script src="{{ asset('plugins/summernote/summernote-bs4.min.js') }}"></script>
-    <!-- overlayScrollbars -->
-    <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
-{% endblock %}
 {% block js_after %}
     <!-- AdminLTE App -->
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('dist/js/demo.js') }}"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{{ asset('dist/js/pages/dashboard.js') }}"></script>
     <!-- Page specific script -->
     <script src="{{ asset('appjs/modals/ajax.modal.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    <script src="{{ asset('appjs/ui/callout.js') }}"></script>
+    <script src="{{ asset('appjs/tree/builder.js') }}"></script>
     <script>
         $('#load_gmail_contact_btn').ajaxAction({'submit': false});
         $('#create_org_btn').ajaxAction({'submit': true});
+        $('#jstreeContainer').treeBuilder({
+            ajax: {
+                url: Routing.generate('view_my_github_tree', {}),
+                success: (dataLoaderFn) => {
+                    return (data) => {
+                        if (typeof dataLoaderFn === 'function') {
+                            dataLoaderFn(data)
+                            $('#jstreeContainer').on("changed.jstree", function (e, data) {
+                                console.log('tree data', data)
+                                $('#batchContainer').calloutList({
+                                    'callouts': data.selected.map((node)=>{
+                                        const nodeObj = $('#jstreeContainer').jstree(true).get_node(document.getElementById(`${node}`))
+                                        if(nodeObj.data){
+                                            if(Object.keys(nodeObj.data).indexOf('type')===-1){
+                                                return false
+                                            }
+                                            return {
+                                                'title': `${nodeObj.data.type} selected`,
+                                                'body': `the ${nodeObj.data.type} ${nodeObj.data.name} is selected`
+                                            }
+                                        }
+                                        return false;
+
+                                    }).filter((item)=>{return item})
+                                })
+                            });
+                            $('#jstreeContainer').on('ready.jstree', function() {
+                                $('#jstreeContainer').jstree("open_all");
+                            });
+                        }
+                    }
+                }
+            },
+        })
+
     </script>
 {% endblock %}
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('app/integration.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
 {% endblock %}

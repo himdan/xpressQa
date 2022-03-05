@@ -164,14 +164,6 @@ class AclDiscoveryRegistry
         }
     }
 
-    private static function resolve($fqcn)
-    {
-        $parts = explode('\\', $fqcn);
-        $length = count($parts);
-        $index = $length > 0 ? $length - 1 : $length;
-        return $parts[$index];
-    }
-
     private static function uglify($fqcn)
     {
         return str_replace('\\', '.', $fqcn);

@@ -13,8 +13,10 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
-    <body class="hold-transition {% block body_class %}sidebar-mini layout-fixed{% endblock %}">
+    <body class="hold-transition text-sm {% block body_class %}sidebar-mini layout-fixed{% endblock %}">
         {% block body %}{% endblock %}
+        <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
         {% block page_js %} {% endblock %}
         {% block modalPlace %}
             <div class="modal fade" id="modal-default">
@@ -60,8 +62,7 @@
                 <!-- /.modal-dialog -->
             </div>
         {% endblock %}
-        <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
-        <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
     {% block lastJs %} {% endblock %}
     </body>
 </html>
